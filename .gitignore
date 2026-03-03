@@ -8,9 +8,9 @@ frontend/node_modules/
 .env.local
 .env.production
 
-# Build output
-dist/
-build/
+# Build output (ignore local builds but allow production builds to be tracked)
+# dist/
+# build/
 
 # Logs
 *.log
