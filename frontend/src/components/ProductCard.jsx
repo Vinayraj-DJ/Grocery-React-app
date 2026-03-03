@@ -3,6 +3,11 @@ import { useAppContext } from "../context/AppContext";
 
 const ProductCard = ({ product }) => {
   const { addToCart, removeFromCart, cartItems, navigate } = useAppContext();
+  
+  // Get backend URL from context (smart detection)
+  const { axios } = useAppContext();
+  const backendUrl = axios.defaults.baseURL;
+  
   return (
     product && (
       <div
@@ -14,11 +19,15 @@ const ProductCard = ({ product }) => {
         }}
         className="border border-gray-500/20 rounded-md md:px-4 px-3 py-2 bg-white min-w-56 max-w-56 w-full"
       >
-        <div className="group cursor-pointer flex items-center justify-center px-2">
+        <div className="group cursor-pointer flex items-center justify-center px-2 overflow-hidden">
           <img
-            className="group-hover:scale-105 transition max-w-26 md:max-w-36"
-            src={`http://localhost:5000/images/${product.image[0]}`}
+            className="group-hover:scale-105 transition max-w-26 md:max-w-36 object-cover"
+            src={product.image[0]}
             alt={product.name}
+            onError={(e) => {
+              console.error('Product image failed to load:', product.image[0]);
+              e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+            }}
           />
         </div>
         <div className="text-gray-500/60 text-sm">

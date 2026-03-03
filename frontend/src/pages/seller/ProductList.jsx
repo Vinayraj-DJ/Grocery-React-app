@@ -70,11 +70,15 @@ const ProductList = () => {
               {products.map((product) => (
                 <tr key={product._id} className="border-t border-gray-500/20">
                   <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                    <div className="border border-gray-300 rounded p-2">
+                    <div className="border border-gray-300 rounded p-2 overflow-hidden">
                       <img
-                        src={`${import.meta.env.VITE_BACKEND_URL}/images/${product.image[0]}`}
-                        alt="Product"
-                        className="w-16"
+                        src={product.image[0]}
+                        alt={product.name}
+                        className="w-16 h-16 object-cover"
+                        onError={(e) => {
+                          console.error('Image failed to load:', product.image[0]);
+                          e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                        }}
                       />
                     </div>
                     <span className="truncate max-sm:hidden w-full">
