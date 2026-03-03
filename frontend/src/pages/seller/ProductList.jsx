@@ -70,14 +70,15 @@ const ProductList = () => {
               {products.map((product) => (
                 <tr key={product._id} className="border-t border-gray-500/20">
                   <td className="md:px-4 pl-2 md:pl-4 py-3 flex items-center space-x-3 truncate">
-                    <div className="border border-gray-300 rounded p-2 overflow-hidden">
+                    <div className="border border-gray-300 rounded p-2 overflow-hidden shrink-0">
                       <img
-                        src={product.image[0]}
+                        src={`${axios.defaults.baseURL}/images/${product.image[0]}`}
                         alt={product.name}
                         className="w-16 h-16 object-cover"
                         onError={(e) => {
                           console.error('Image failed to load:', product.image[0]);
-                          e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+                          // Use a data URL for placeholder to avoid external dependency
+                          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext x="50" y="50" font-family="Arial" font-size="12" fill="%23999" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
                         }}
                       />
                     </div>
@@ -95,10 +96,9 @@ const ProductList = () => {
                         onClick={() =>
                           toggleStock(product._id, !product.inStock)
                         }
-                        checked={product.inStock}
+                        defaultChecked={product.inStock}
                         type="checkbox"
                         className="sr-only peer"
-                        defaultChecked={product.inStock}
                       />
                       <div className="w-12 h-7 bg-slate-300 rounded-full peer peer-checked:bg-blue-600 transition-colors duration-200"></div>
                       <span className="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-5"></span>
@@ -121,7 +121,7 @@ const ProductList = () => {
       </div>
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50 animate-fadeIn">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 animate-fadeIn">
           <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 animate-scaleIn">
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Confirm Deletion</h3>
             <p className="text-gray-600 mb-1">Are you sure you want to delete this product?</p>
@@ -130,13 +130,13 @@ const ProductList = () => {
             <div className="flex justify-end space-x-3">
               <button 
                 onClick={cancelDelete}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200 font-medium"
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200 font-medium cursor-pointer"
               >
                 Cancel
               </button>
               <button 
                 onClick={confirmDelete}
-                className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all duration-200 font-medium shadow-md"
+                className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg transition-all duration-200 font-medium shadow-md cursor-pointer"
               >
                 Delete
               </button>
@@ -144,7 +144,7 @@ const ProductList = () => {
           </div>
         </div>
       )}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }

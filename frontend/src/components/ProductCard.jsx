@@ -22,11 +22,12 @@ const ProductCard = ({ product }) => {
         <div className="group cursor-pointer flex items-center justify-center px-2 overflow-hidden">
           <img
             className="group-hover:scale-105 transition max-w-26 md:max-w-36 object-cover"
-            src={product.image[0]}
+            src={`${axios.defaults.baseURL}/images/${product.image[0]}`}
             alt={product.name}
             onError={(e) => {
               console.error('Product image failed to load:', product.image[0]);
-              e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+              // Use a data URL for placeholder
+              e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"%3E%3Crect fill="%23ddd" width="100" height="100"/%3E%3Ctext x="50" y="50" font-family="Arial" font-size="12" fill="%23999" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
             }}
           />
         </div>
