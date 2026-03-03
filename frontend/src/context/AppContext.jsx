@@ -4,9 +4,26 @@ import { dummyProducts } from "../assets/assets";
 import toast from "react-hot-toast";
 import axios from "axios";
 axios.defaults.withCredentials = true;
-// Use hardcoded URL for production to avoid Vercel env variable issues
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://mern-backend-ed5w.onrender.com";
+
+// Smart backend URL detection - works for both local and production
+const getBackendURL = () => {
+  // Check if running in development mode
+  const isDevelopment = window.location.hostname === 'localhost' || 
+                        window.location.hostname === '127.0.0.1';
+  
+  if (isDevelopment) {
+    // Local development - use localhost
+    return 'http://localhost:5000';
+  } else {
+    // Production (Vercel) - use Render backend
+    return import.meta.env.VITE_BACKEND_URL || "https://mern-backend-ed5w.onrender.com";
+  }
+};
+
+const BACKEND_URL = getBackendURL();
 axios.defaults.baseURL = BACKEND_URL;
+console.log('🔧 Backend URL:', BACKEND_URL);
+
 // Add timeout for slow Render responses (free tier sleeps)
 axios.defaults.timeout = 60000; // 60 seconds
 export const AppContext = createContext(null);
