@@ -12,8 +12,10 @@ export const addProduct = async (req, res) => {
         description = [description];
       }
     }
-    // const image = req.files?.map((file) => `/uploads/${file.filename}`);
-    const image = req.files?.map((file) => file.filename);
+    
+    // Upload images to Cloudinary
+    const image = req.files?.map((file) => file.path); // Cloudinary URL from multer
+    
     if (
       !name ||
       !price ||
