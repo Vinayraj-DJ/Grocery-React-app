@@ -23,6 +23,8 @@ const getBackendURL = () => {
 const BACKEND_URL = getBackendURL();
 axios.defaults.baseURL = BACKEND_URL;
 console.log('🔧 Backend URL:', BACKEND_URL);
+console.log('🌍 Window location:', window.location.hostname);
+console.log('📡 Axios baseURL configured:', axios.defaults.baseURL);
 
 // Add timeout for slow Render responses (free tier sleeps)
 axios.defaults.timeout = 60000; // 60 seconds
@@ -69,22 +71,28 @@ export const AppContextProvider = ({ children }) => {
   // fetch products
   const fetchProducts = async () => {
     try {
-      console.log("🔄 Fetching products from:", axios.defaults.baseURL + "/api/product/list");
+      const url = axios.defaults.baseURL + "/api/product/list";
+      console.log("🔄 Fetching products from:", url);
+      console.log("📡 Full request URL:", url);
       const { data } = await axios.get("/api/product/list");
-      console.log("✅ Products response:", data);
+      console.log("✅ Products response received:", data);
+      console.log("✅ Success flag:", data.success);
+      console.log("✅ Products count:", data.products?.length || 0);
       if (data.success) {
         setProducts(data.products);
-        console.log("✅ Products loaded:", data.products.length, "products");
+        console.log("✅ Products state updated:", data.products.length, "products");
       } else {
         toast.error(data.message);
         console.error("❌ Failed to fetch products:", data.message);
       }
     } catch (error) {
       console.error("❌ Error fetching products:", error.message);
+      console.error("❌ Error code:", error.code);
+      console.error("❌ Error stack:", error.stack);
       if (error.code === 'ECONNABORTED') {
         toast.error("Backend server is slow to respond (Render free tier). Please wait and refresh.");
       } else {
-        toast.error(error.message || "Failed to connect to backend");
+        toast.error(error.response?.data?.message || error.message || "Failed to connect to backend");
       }
     }
   };
