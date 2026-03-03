@@ -4,7 +4,9 @@ import { dummyProducts } from "../assets/assets";
 import toast from "react-hot-toast";
 import axios from "axios";
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+// Use hardcoded URL for production to avoid Vercel env variable issues
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://mern-backend-ed5w.onrender.com";
+axios.defaults.baseURL = BACKEND_URL;
 export const AppContext = createContext(null);
 
 export const AppContextProvider = ({ children }) => {
