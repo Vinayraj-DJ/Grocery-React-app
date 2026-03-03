@@ -7,6 +7,8 @@ axios.defaults.withCredentials = true;
 // Use hardcoded URL for production to avoid Vercel env variable issues
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://mern-backend-ed5w.onrender.com";
 axios.defaults.baseURL = BACKEND_URL;
+// Add timeout for slow Render responses (free tier sleeps)
+axios.defaults.timeout = 60000; // 60 seconds
 export const AppContext = createContext(null);
 
 export const AppContextProvider = ({ children }) => {
@@ -50,19 +52,23 @@ export const AppContextProvider = ({ children }) => {
   // fetch products
   const fetchProducts = async () => {
     try {
-      console.log("Fetching products from:", axios.defaults.baseURL + "/api/product/list");
+      console.log("🔄 Fetching products from:", axios.defaults.baseURL + "/api/product/list");
       const { data } = await axios.get("/api/product/list");
-      console.log("Products response:", data);
+      console.log("✅ Products response:", data);
       if (data.success) {
         setProducts(data.products);
-        console.log("Products loaded:", data.products.length);
+        console.log("✅ Products loaded:", data.products.length, "products");
       } else {
         toast.error(data.message);
-        console.error("Failed to fetch products:", data.message);
+        console.error("❌ Failed to fetch products:", data.message);
       }
     } catch (error) {
-      console.error("Error fetching products:", error);
-      toast.error(error.message);
+      console.error("❌ Error fetching products:", error.message);
+      if (error.code === 'ECONNABORTED') {
+        toast.error("Backend server is slow to respond (Render free tier). Please wait and refresh.");
+      } else {
+        toast.error(error.message || "Failed to connect to backend");
+      }
     }
   };
   // add product to cart
