@@ -15,6 +15,12 @@ const AddProduct = () => {
     try {
       e.preventDefault();
 
+      // Validate files
+      if (!files || files.length === 0) {
+        toast.error("Please select at least one product image");
+        return;
+      }
+
       const formData = new FormData();
       formData.append("name", name);
       formData.append("description", JSON.stringify([description]));
@@ -23,10 +29,23 @@ const AddProduct = () => {
       formData.append("offerPrice", offerPrice);
 
       for (let i = 0; i < files.length; i++) {
-        formData.append("image", files[i]);
+        if (files[i]) {
+          formData.append("image", files[i]);
+          console.log(`📎 Adding image ${i+1}:`, files[i].name, files[i].size, 'bytes');
+        }
       }
 
-      const { data } = await axios.post("/api/product/add-product", formData);
+      console.log('🚀 Submitting product...');
+      console.log('📦 Total images to upload:', files.filter(f => f).length);
+
+      const { data } = await axios.post("/api/product/add-product", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      console.log('✅ Response:', data);
+      
       if (data.success) {
         toast.success(data.message);
         setName("");
@@ -39,7 +58,9 @@ const AddProduct = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      console.error('❌ Upload error:', error);
+      console.error('Error response:', error.response?.data);
+      toast.error(error.response?.data?.message || error.message || "Failed to upload product");
     }
   };
 

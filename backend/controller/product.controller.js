@@ -4,6 +4,11 @@ import Product from "../models/product.model.js";
 export const addProduct = async (req, res) => {
   try {
     let { name, price, offerPrice, description, category } = req.body;
+    
+    console.log('📦 Request body:', req.body);
+    console.log('📎 Files received:', req.files);
+    console.log('📎 Files count:', req.files?.length);
+    
     // Parse description if it's a JSON string
     if (typeof description === 'string') {
       try {
@@ -13,8 +18,9 @@ export const addProduct = async (req, res) => {
       }
     }
     
-    // Upload images to Cloudinary
-    const image = req.files?.map((file) => file.path); // Cloudinary URL from multer
+    // Get uploaded image paths
+    const image = req.files?.map((file) => file.filename);
+    console.log('🖼️ Image filenames:', image);
     
     if (
       !name ||
@@ -42,13 +48,15 @@ export const addProduct = async (req, res) => {
 
     const savedProduct = await product.save();
 
+    console.log('✅ Product saved:', savedProduct._id);
+
     return res.status(201).json({
       success: true,
       product: savedProduct,
       message: "Product added successfully",
     });
   } catch (error) {
-    console.error("Error in addProduct:", error);
+    console.error("❌ Error in addProduct:", error);
 
     return res
       .status(500)
