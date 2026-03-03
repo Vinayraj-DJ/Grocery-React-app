@@ -19,8 +19,8 @@ await connectCloudinary();
 // allow multiple origins
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://your-frontend.vercel.app", // Replace with your actual frontend URL
-  "https://your-frontend.onrender.com" // Replace with your actual frontend URL
+  "https://grocery-react-app-five.vercel.app", // Your deployed Vercel URL
+  "https://mern-backend-ed5w.onrender.com"
 ];
 //middlewares
 app.use(cors({ 
