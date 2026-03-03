@@ -3,7 +3,15 @@ import Product from "../models/product.model.js";
 // add product :/api/product/add
 export const addProduct = async (req, res) => {
   try {
-    const { name, price, offerPrice, description, category } = req.body;
+    let { name, price, offerPrice, description, category } = req.body;
+    // Parse description if it's a JSON string
+    if (typeof description === 'string') {
+      try {
+        description = JSON.parse(description);
+      } catch (e) {
+        description = [description];
+      }
+    }
     // const image = req.files?.map((file) => `/uploads/${file.filename}`);
     const image = req.files?.map((file) => file.filename);
     if (
@@ -77,6 +85,22 @@ export const changeStock = async (req, res) => {
     res
       .status(200)
       .json({ success: true, product, message: "Stock updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// delete product  :/api/product/remove
+export const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const product = await Product.findByIdAndDelete(id);
+    
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+    
+    res.status(200).json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

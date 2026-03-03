@@ -4,6 +4,7 @@ import { authSeller } from "../middlewares/authSeller.js";
 import {
   addProduct,
   changeStock,
+  deleteProduct,
   getProductById,
   getProducts,
 } from "../controller/product.controller.js";
@@ -14,5 +15,6 @@ router.post("/add-product", authSeller, upload.array("image", 4), addProduct);
 router.get("/list", getProducts);
 router.get("/id", getProductById);
 router.post("/stock", authSeller, changeStock);
+router.delete("/remove", authSeller, deleteProduct);
 
 export default router;
