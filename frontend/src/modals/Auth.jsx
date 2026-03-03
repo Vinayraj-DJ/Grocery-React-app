@@ -11,20 +11,30 @@ const Auth = () => {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      console.log(`🔄 ${state === 'login' ? 'Logging in' : 'Registering'}...`);
       const { data } = await axios.post(`/api/user/${state}`, {
         name,
         email,
         password,
       });
+      console.log(`${state === 'login' ? 'Login' : 'Register'} response:`, data);
       if (data.success) {
         toast.success(data.message);
-        navigate("/");
         setUser(data.user);
         setShowUserLogin(false);
+        navigate("/");
       } else {
         toast.error(data.message);
+        console.error(`${state} failed:`, data.message);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error(`❌ ${state} error:`, error.message);
+      if (error.code === 'ECONNABORTED') {
+        toast.error("Backend server is slow. Please wait and try again.");
+      } else {
+        toast.error(error.response?.data?.message || "Something went wrong");
+      }
+    }
   };
   return (
     <div
