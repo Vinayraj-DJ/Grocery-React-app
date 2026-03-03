@@ -1,0 +1,16 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "frontend/dist",
+  "installCommand": "npm install && cd frontend && npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "https://mern-backend-ed5w.onrender.com/api/$1"
+    }
+  ]
+}
