@@ -16,24 +16,12 @@ import { connectCloudinary } from "./config/cloudinary.js";
 const app = express();
 
 await connectCloudinary();
-// allow multiple origins
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://grocery-react-app-five.vercel.app", // Your deployed Vercel URL
-  "https://mern-backend-ed5w.onrender.com"
-];
-//middlewares
-app.use(cors({ 
-  origin: function(origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.includes('vercel.app') || origin.includes('onrender.com')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true 
+// allow all origins for production (you can restrict this later if needed)
+app.use(cors({
+  origin: true, // Accept all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(cookieParser());
 app.use(express.json());
